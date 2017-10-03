@@ -1,0 +1,6 @@
+# Ignore databse
+./data/*
+
+# Ignore nodejs stuff
+./node_modules/*
+./package-lock.json
