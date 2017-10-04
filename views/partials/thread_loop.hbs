@@ -1,0 +1,6 @@
+{{#each threads}}
+<div class="uk-width-1-1" id="thread-{{id}}"></div>
+<script>
+$.post("/thread_ajax", {id:"{{id}}"}, (result) => { $("#thread-{{id}}").html(result) });
+</script>
+{{/each}}

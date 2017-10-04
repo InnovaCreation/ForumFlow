@@ -1,0 +1,9 @@
+<div class="am-section am-width-1-1">
+	<h1 class="uk-heading-primary">{{title}}</h1>
+	{{#each posts}}
+	<div class="uk-width-1-1" id="post-{{id}}"></div>
+	<script>
+	$.post("/post_ajax", {id:"{{id}}"}, (result) => { $("#post-{{id}}").html(result) });
+	</script>
+	{{/each}}
+</div>

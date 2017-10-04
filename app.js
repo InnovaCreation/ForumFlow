@@ -39,6 +39,46 @@ var db = mongoose.connection;
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
+// Setup root user & root forum (if doesn't exist)
+var User = require('./models/user');
+var Forum = require('./models/forum');
+User.getUserByUsername(GlobalConfig.Root.Name, function(err, user) {
+	function check_create_root_forum(rootuser) {
+		Forum.getForumByName(GlobalConfig.RootForum.Name, function(err, f) {
+			if (err) throw err;
+			if (!f) {
+				var rootforum = new Forum({
+					name: GlobalConfig.RootForum.Name,
+					sub_forum: [],
+					moderator: rootuser.id
+				});
+
+				Forum.createForum(rootforum, function(err, forum){
+					console.log("Root forum created");
+				});
+			}
+		});
+	}
+
+	if(err) throw err;
+	if(!user){
+		var rootUser = new User({
+			name: GlobalConfig.Root.Name,
+			email: GlobalConfig.Root.Email,
+			username: GlobalConfig.Root.UserName,
+			password: GlobalConfig.Root.Passwd
+		});
+
+		User.createUser(rootUser, function(err, user){
+			if(err) throw err;
+			console.log("Root user created");
+			check_create_root_forum(user);
+		});
+	} else {
+		check_create_root_forum(user);
+	}
+});
+
 // Init weapon
 var app = express();
 
@@ -51,6 +91,8 @@ app.engine('hbs', hbs({
 }));
 app.locals.GConfig = GlobalConfig;
 app.set('view engine', 'hbs');
+
+//hbs.registerPartial('user_log', '{{user_log}}')
 
 // BodyParser Middleware
 app.use(bodyParser.json());

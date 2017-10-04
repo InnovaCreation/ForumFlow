@@ -1,1 +1,9 @@
 INDEX
+
+{{#if req.user}}
+Logined {{req.user}}
+{{else}}
+{{> user_log}}
+{{/if}}
+
+{{> thread_loop}}
