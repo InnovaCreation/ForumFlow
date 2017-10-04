@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+
+		<link rel="stylesheet" href="/css/uikit.min.css" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="/js/uikit.min.js"></script>
+		<script src="/js/uikit-icons.min.js"></script>
+	</head>
+	<body>
+		<div id="content" class="uk-container">
+			<div class="uk-container" id="flash_alerts">
+				{{#if success_msg}}
+				<div class="uk-alert uk-alert-success">{{success_msg}}</div>
+				{{/if}}
+				{{#if error_msg}}
+				<div class="uk-alert uk-alert-danger">{{error_msg}}</div>
+				{{/if}}
+				{{#if error}}
+				<div class="uk-alert uk-alert-danger">{{error}}</div>
+				{{/if}}
+			</div>
+			<div class="uk-width-1-1">
+				{{{body}}}
+			</div>
+		</div>
+
+		<footer class="uk-panel uk-background-secondary uk-light uk-height-small uk-width-1-1 uk-flex uk-flex-center uk-flex-middle">
+			<p>Powered by ForumFlow, &copy; {{GConfig.App.CopyRightName}} 2017</p>
+		</footer>
+	</body>
+</html>
