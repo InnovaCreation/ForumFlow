@@ -52,7 +52,7 @@ router.get('/thread', function(req, res){
 		if (err) throw err;
 		if (p) {
 			Thread.getThreadById(req.query.id, (err,t) => {
-				res.render('partials/post_loop', {
+				res.render('thread/thread', {
 					req:req,
 					posts:p,
 					title:t.name
