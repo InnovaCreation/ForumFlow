@@ -11,15 +11,15 @@
 	</head>
 	<body>
 		<div id="content" class="uk-container">
-			<div class="uk-container" id="flash_alerts">
+			<div id="flash_alerts">
 				{{#if success_msg}}
-				<div class="uk-alert uk-alert-success">{{success_msg}}</div>
+				<div class="uk-alert uk-alert-success uk-padding-small">{{success_msg}}</div>
 				{{/if}}
 				{{#if error_msg}}
-				<div class="uk-alert uk-alert-danger">{{error_msg}}</div>
+				<div class="uk-alert uk-alert-danger uk-padding-small">{{error_msg}}</div>
 				{{/if}}
 				{{#if error}}
-				<div class="uk-alert uk-alert-danger">{{error}}</div>
+				<div class="uk-alert uk-alert-danger uk-padding-small">{{error}}</div>
 				{{/if}}
 			</div>
 			<div class="uk-width-1-1">
@@ -27,8 +27,10 @@
 			</div>
 		</div>
 
+		<div uk-height-viewport="expand: true"></div>
+
 		<footer class="uk-panel uk-background-secondary uk-light uk-height-small uk-width-1-1 uk-flex uk-flex-center uk-flex-middle">
-			<p>Powered by ForumFlow, &copy; {{GConfig.App.CopyRightName}} 2017</p>
+			<p>&copy; {{GConfig.App.CopyRightName}} 2017. Powered by <strong>ForumFlow</strong></p>
 		</footer>
 	</body>
 </html>
