@@ -2,19 +2,19 @@ var express = require('express');
 var router = express.Router();
 
 var md = require('markdown-it')()
-        .use(require('markdown-it-math'))
-        .use(require('markdown-it-emoji'))
-        .use(require('markdown-it-footnote'))
-        .use(require('markdown-it-deflist'))
-        .use(require('markdown-it-html5-embed'), {
-          html5embed: {
-            useImageSyntax: true, // Enables video/audio embed with ![]() syntax (default)
-            useLinkSyntax: true   // Enables video/audio embed with []() syntax
-        }})
-        .use(require("markdown-it-block-image"), {
-          outputContainer: true,
-          containerClassName: "uk-flex uk-flex-center uk-width-1-3@lg uk-width-1-2@m uk-width-5-6@s"
-        });
+	.use(require('markdown-it-math'))
+	.use(require('markdown-it-emoji'))
+	.use(require('markdown-it-footnote'))
+	.use(require('markdown-it-deflist'))
+	.use(require('markdown-it-html5-embed'), {
+	  html5embed: {
+	  useImageSyntax: true, // Enables video/audio embed with ![]() syntax (default)
+	  useLinkSyntax: true   // Enables video/audio embed with []() syntax
+	}})
+	.use(require("markdown-it-block-image"), {
+	  outputContainer: true,
+	  containerClassName: "uk-flex uk-flex-center uk-width-1-3@lg uk-width-1-2@m uk-width-5-6@s"
+	});
 
 var User = require('../models/user');
 var Forum = require('../models/forum');
@@ -53,7 +53,7 @@ router.post('/thread_ajax', function(req, res) {
 				User.getUserById(t.owner, (err,u) => {
 					if(err) throw err;
 					var current_user = req.user ? req.user.id : null;
-					var remove_flag = (f.owner == current_user || t.owner == current_user);
+					var remove_flag = (f.moderator == current_user || t.owner == current_user);
 					remove_flag = remove_flag && current_user;
 					res.render('partials/thread_ajax', {
 						title:title,
@@ -96,7 +96,7 @@ router.get('/remove_thread', function(req, res){
 		Forum.getForumById(t.forum, (err,f) => {
 			if (err) throw err;
 			if (!f) res.redirect('/');
-			if (req.user.id == t.owner || req.user.id == f.owner) {
+			if (req.user.id == t.owner || req.user.id == f.moderator) {
 				t.remove();
 
 				Post.getPostsByThread(t.id, (err,p) => {
