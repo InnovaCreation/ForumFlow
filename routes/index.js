@@ -118,6 +118,8 @@ router.get('/remove_thread', function(req, res){
 	});
 });
 
+var dateformat = require('dateformat');
+
 router.post('/post_ajax', function(req, res) {
 	var author = "";
 	var content = "";
@@ -131,7 +133,8 @@ router.post('/post_ajax', function(req, res) {
 				content:content,
 				author:u.name,
 				layout:false,
-				post:p
+				post:p,
+				created_at:dateformat(p.createdAt, "yyyy-mm-dd HH:MM")
 			});
 		});
 	});

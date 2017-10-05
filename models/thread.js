@@ -14,7 +14,7 @@ var ThreadSchema = mongoose.Schema({
 	last_floor: {
 		type: Number
 	}
-});
+}, {timestamps: true});
 
 var Thread = module.exports = mongoose.model('thread', ThreadSchema);
 

@@ -14,7 +14,7 @@ var PostSchema = mongoose.Schema({
 	floor: {
 		type: Number
 	}
-});
+}, { timestamps: true});
 
 var Post = module.exports = mongoose.model('post', PostSchema);
 
