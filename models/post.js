@@ -10,6 +10,9 @@ var PostSchema = mongoose.Schema({
 	},
 	post: {
 		type: String
+	},
+	floor: {
+		type: Number
 	}
 });
 

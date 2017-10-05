@@ -1,0 +1,21 @@
+<div class="uk-flex uk-flex-middle uk-flex-center">
+	<div class="uk-panel uk-width-1-1">
+		<h2 class="uk-heading-line">Create post for {{thread.name}}</h2>
+
+		{{#if errors}}
+		{{#each errors}}
+		<div class="uk-label uk-label-danger">{{msg}}</div>
+		{{/each}}
+		{{/if}}
+
+		<form method="post" action="/new_post" class="uk-form uk-margin-small">
+			<div class="uk-margin-small">
+				<textarea class="uk-textarea" placeholder="Content" name="content" id="form-content" uk-height-viewport="expand: true"></textarea>
+			</div>
+			<input type="hidden" name="thread" id="form-thread" value="{{thread.id}}">
+			<div class="uk-margin-small">
+				<button type="submit" class="uk-button uk-button-primary">Post</button>
+			</div>
+		</form>
+	</div>
+</div>

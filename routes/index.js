@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var md = require('markdown-it')()
-	.use(require('markdown-it-math'))
+	.use(require('markdown-it-katex'))
 	.use(require('markdown-it-emoji'))
 	.use(require('markdown-it-footnote'))
 	.use(require('markdown-it-deflist'))
@@ -78,7 +78,8 @@ router.get('/thread', function(req, res){
 				res.render('thread/thread', {
 					req:req,
 					posts:p,
-					title:t.name
+					title:t.name,
+					thread:t
 				});
 			})
 		} else {
@@ -129,7 +130,8 @@ router.post('/post_ajax', function(req, res) {
 			res.render('partials/post_ajax', {
 				content:content,
 				author:u.name,
-				layout:false
+				layout:false,
+				post:p
 			});
 		});
 	});
@@ -148,6 +150,23 @@ router.get('/new_thread', function(req, res){
 	}
 });
 
+function new_post(thread, owner, content, callback) {
+	thread.last_floor ++;
+	if (!thread.last_floor) thread.last_floor = 0;
+
+	var firstPost = new Post({
+		thread: thread.id,
+		owner : owner.id,
+		post  : content,
+		floor : thread.last_floor
+	});
+
+	console.log(firstPost);
+	thread.save();
+
+	Post.createPost(firstPost, callback);
+}
+
 router.post('/new_thread', function(req, res){
 	if (req.user) {
 		var title = req.body.title;
@@ -157,12 +176,12 @@ router.post('/new_thread', function(req, res){
 
 		// Validation
 		req.checkBody('title', 'Title can not be empty').notEmpty();
-		req.checkBody('content', 'Email can not be empty').notEmpty();
+		req.checkBody('content', 'Content can not be empty').notEmpty();
 
 		var errors = req.validationErrors();
 
 		if(errors){
-			res.render('users/register',{
+			res.render('thread/new_thread',{
 				errors:errors
 			});
 		} else {
@@ -174,15 +193,57 @@ router.post('/new_thread', function(req, res){
 
 			Thread.createThread(newThread, function(err,t) {
 				if (err) throw err;
-				var firstPost = new Post({
-					thread: t.id,
-					owner : user.id,
-					post  : content
-				});
 
-				Post.createPost(firstPost, function(err,t) {
+				new_post(t, user, content, function(err,t) {
 					if (err) throw err;
 					console.log("Create thread " + t.id.toString());
+
+					res.redirect('/');
+				});
+			});
+		}
+	} else {
+		req.flash('error_msg', 'You need to login first.');
+
+		res.redirect('/users/login');
+	}
+});
+
+router.get('/new_post', function(req, res){
+	if (req.query.id) {
+		Thread.getThreadById(req.query.id, function(err, t) {
+			if (err) throw err;
+			res.render('thread/new_post', {
+				thread:t
+			});
+		});
+	} else {
+		res.redirect('/');
+	}
+});
+
+router.post('/new_post', function(req, res){
+	if (req.user) {
+		var content = req.body.content;
+		var thread = req.body.thread;
+		var user = req.user;
+
+		// Validation
+		req.checkBody('content', 'Content can not be empty').notEmpty();
+
+		var errors = req.validationErrors();
+
+		if(errors){
+			res.render('/new_post',{
+				errors:errors
+			});
+		} else {
+			Thread.getThreadById(thread, (err,t) => {
+				if (err) throw err;
+				if (!t) res.redirect('/');
+				new_post(t, user, content, function(err,p) {
+					if (err) throw err;
+					console.log("Create post " + p.id.toString() + " floor   " + p.floor);
 
 					res.redirect('/');
 				});
