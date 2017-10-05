@@ -1,6 +1,21 @@
 var express = require('express');
 var router = express.Router();
 
+var md = require('markdown-it')()
+        .use(require('markdown-it-math'))
+        .use(require('markdown-it-emoji'))
+        .use(require('markdown-it-footnote'))
+        .use(require('markdown-it-deflist'))
+        .use(require('markdown-it-html5-embed'), {
+          html5embed: {
+            useImageSyntax: true, // Enables video/audio embed with ![]() syntax (default)
+            useLinkSyntax: true   // Enables video/audio embed with []() syntax
+        }})
+        .use(require("markdown-it-block-image"), {
+          outputContainer: true,
+          containerClassName: "uk-flex uk-flex-center uk-width-1-3@lg uk-width-1-2@m uk-width-5-6@s"
+        });
+
 var User = require('../models/user');
 var Forum = require('../models/forum');
 var Thread = require('../models/thread');
@@ -19,6 +34,7 @@ router.get('/', function(req, res){
 			res.render('index', {
 				req:req,
 				threads:t,
+				forum:f
 			});
 		});
 	});
@@ -32,15 +48,22 @@ router.post('/thread_ajax', function(req, res) {
 		if (err) throw err;
 		if (t) {
 			title = t.name;
-			User.getUserById(t.owner, (err,u) => {
-				if(err) throw err;
-				res.render('partials/thread_ajax', {
-					title:title,
-					id:req.body.id,
-					owner:u.name,
-					layout:false
+			Forum.getForumById(t.forum, (err,f) => {
+				if (err) throw err;
+				User.getUserById(t.owner, (err,u) => {
+					if(err) throw err;
+					var current_user = req.user ? req.user.id : null;
+					var remove_flag = (f.owner == current_user || t.owner == current_user);
+					remove_flag = remove_flag && current_user;
+					res.render('partials/thread_ajax', {
+						title:title,
+						id:req.body.id,
+						owner:u.name,
+						remove_flag:remove_flag,
+						layout:false
+					});
 				});
-			});
+			})
 		} else {
 			res.send('');
 		}
@@ -64,13 +87,43 @@ router.get('/thread', function(req, res){
 	});
 });
 
+router.get('/remove_thread', function(req, res){
+	if (!req.query.id) res.redirect('/');
+
+	Thread.getThreadById(req.query.id, (err,t) => {
+		if (err) throw err;
+		if (!t) res.redirect('/');
+		Forum.getForumById(t.forum, (err,f) => {
+			if (err) throw err;
+			if (!f) res.redirect('/');
+			if (req.user.id == t.owner || req.user.id == f.owner) {
+				t.remove();
+
+				Post.getPostsByThread(t.id, (err,p) => {
+					if (err) throw err;
+					if (!p) res.redirect('/');
+					p.forEach((post) => {
+						post.remove();
+					});
+
+					console.log("Remove thread " + t.id.toString());
+					res.redirect('/');
+				});
+			} else {
+				req.flash('error_msg', 'You need to be the owner of that thread');
+				res.redirect('/');
+			}
+		});
+	});
+});
+
 router.post('/post_ajax', function(req, res) {
 	var author = "";
 	var content = "";
 
 	Post.getPostById(req.body.id, (err,p) => {
 		if (err) throw err;
-		content = p.post;
+		content = md.render(p.post);
 		User.getUserById(p.owner, (err,u) => {
 			if(err) throw err;
 			res.render('partials/post_ajax', {
@@ -83,12 +136,16 @@ router.post('/post_ajax', function(req, res) {
 });
 
 router.get('/new_thread', function(req, res){
-	Forum.getForumByName(req.app.locals.GConfig.RootForum.Name, function(err, f) {
-		if (err) throw err;
-		res.render('thread/new_thread', {
-			forum:f
+	if (req.query.id) {
+		Forum.getForumById(req.query.id, function(err, f) {
+			if (err) throw err;
+			res.render('thread/new_thread', {
+				forum:f
+			});
 		});
-	});
+	} else {
+		res.redirect('/');
+	}
 });
 
 router.post('/new_thread', function(req, res){
