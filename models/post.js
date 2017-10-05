@@ -1,3 +1,4 @@
+var handle = require('../models/error_handle');
 var mongoose = require('mongoose');
 
 var PostSchema = mongoose.Schema({
@@ -28,4 +29,14 @@ module.exports.getPostsByThread = function(thread,callback){
 
 module.exports.getPostById = function(id, callback){
 	Post.findById(id, callback);
+}
+
+// Promise
+module.exports.getByThread = function(thread){
+	return Post.find({thread:thread}).exec(handle.db_callback);
+}
+
+module.exports.getById = function(id){
+	if (!mongoose.Types.ObjectId.isValid(id)) return Promise.reject("Invalid ID");
+	return Post.findById(id).exec(handle.db_callback);
 }

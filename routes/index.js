@@ -16,6 +16,8 @@ var md = require('markdown-it')()
 	  containerClassName: "uk-flex uk-flex-center uk-width-1-3@lg uk-width-1-2@m uk-width-5-6@s"
 	});
 
+var handle = require('../models/error_handle');
+
 var User = require('../models/user');
 var Forum = require('../models/forum');
 var Thread = require('../models/thread');
@@ -25,96 +27,97 @@ var app = require('../app');
 
 // Get Homepage
 router.get('/', function(req, res){
-	Forum.getForumByName(req.app.locals.GConfig.RootForum.Name, function(err, f) {
-		if (err) throw err;
+	var f;
 
-		Thread.getThreadsByForum(f.id, function(err, t) {
-			if (err) throw err;
-
-			res.render('index', {
-				req:req,
-				threads:t,
-				forum:f
-			});
+	Forum.getByName(req.app.locals.GConfig.RootForum.Name)
+	.then((forum) => {
+		f = forum;
+		return Thread.getByForum(forum.id);
+	}, handle.promise_reject)
+	.then((thread) => {
+		res.render('index', {
+			req:req,
+			threads:thread,
+			forum:f
 		});
-	});
+	}, handle.promise_reject);
 });
 
 router.post('/thread_ajax', function(req, res) {
 	var title = "";
 	var owner = "";
 
-	Thread.getThreadById(req.body.id, (err,t) => {
-		if (err) throw err;
-		if (t) {
-			title = t.name;
-			Forum.getForumById(t.forum, (err,f) => {
-				if (err) throw err;
-				User.getUserById(t.owner, (err,u) => {
-					if(err) throw err;
-					var current_user = req.user ? req.user.id : null;
-					var remove_flag = (f.moderator == current_user || t.owner == current_user);
-					remove_flag = remove_flag && current_user;
-					res.render('partials/thread_ajax', {
-						title:title,
-						id:req.body.id,
-						owner:u.name,
-						remove_flag:remove_flag,
-						layout:false
-					});
-				});
-			})
-		} else {
-			res.send('');
-		}
+	var thread = null;
+	var forum = null;
+
+	Thread.getById(req.body.id).then((t) => {
+		// Get thread
+		thread = t;
+		if (!thread) return Promise.reject();
+		title = thread.name;
+		return Forum.getById(thread.forum);
+	}, handle.promise_reject).then((f) => {
+		// Get forum
+		forum = f;
+		return User.getById(thread.owner);
+	}, handle.promise_reject).then((u) => {
+		// Get user
+		var current_user = req.user ? req.user.id : null;
+		var remove_flag = (forum.moderator == current_user || thread.owner == current_user);
+		res.render('partials/thread_ajax', {
+			title:title,
+			id:req.body.id,
+			owner:u.name,
+			remove_flag:remove_flag,
+			layout:false
+		});
+	}, handle.promise_reject).then(null, ()=>{
+		res.send('');
 	});
 });
 
 router.get('/thread', function(req, res){
-	Post.getPostsByThread(req.query.id, function(err, p) {
-		if (err) throw err;
-		if (p) {
-			Thread.getThreadById(req.query.id, (err,t) => {
-				res.render('thread/thread', {
-					req:req,
-					posts:p,
-					title:t.name,
-					thread:t
-				});
-			})
-		} else {
-			res.redirect('/');
-		}
+	var post;
+	Post.getByThread(req.query.id).then((p) => {
+		if (!p) return Promise.reject();
+		post = p;
+		return Thread.getById(req.query.id);
+	}, handle.promise_reject).then((t) => {
+		res.render('thread/thread', {
+			req:req,
+			posts:post,
+			title:t.name,
+			thread:t
+		});
+	}, handle.promise_reject).then(null, ()=>{
+		res.redirect('/');
 	});
 });
 
 router.get('/remove_thread', function(req, res){
 	if (!req.query.id) res.redirect('/');
 
-	Thread.getThreadById(req.query.id, (err,t) => {
-		if (err) throw err;
-		if (!t) res.redirect('/');
-		Forum.getForumById(t.forum, (err,f) => {
-			if (err) throw err;
-			if (!f) res.redirect('/');
-			if (req.user.id == t.owner || req.user.id == f.moderator) {
-				t.remove();
+	var thread;
 
-				Post.getPostsByThread(t.id, (err,p) => {
-					if (err) throw err;
-					if (!p) res.redirect('/');
-					p.forEach((post) => {
-						post.remove();
-					});
-
-					console.log("Remove thread " + t.id.toString());
-					res.redirect('/');
-				});
-			} else {
-				req.flash('error_msg', 'You need to be the owner of that thread');
-				res.redirect('/');
-			}
-		});
+	Thread.getById(req.query.id).then((t) => {
+		thread = t;
+		if (!thread) return Promise.reject();
+		return Forum.getById(t.forum);
+	}, handle.promise_reject).then((f) => {
+		if (!f) return Promise.reject();
+		if (req.user.id == thread.owner || req.user.id == f.moderator) {
+			thread.remove();
+			return Post.getByThread(thread.id);
+		} else {
+			req.flash('error_msg', 'You need to be the owner of that thread');
+			return Promise.reject();
+		}
+	}, handle.promise_reject).then((p) => {
+		if (p) p.forEach((post) => { post.remove(); });
+		console.log("Remove thread " + thread.id.toString());
+		res.redirect('/');
+	}, handle.promise_reject).then(null, () => {
+		res.redirect('/');
 	});
 });
 

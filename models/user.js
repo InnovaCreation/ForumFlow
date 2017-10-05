@@ -1,3 +1,4 @@
+var handle = require('../models/error_handle');
 var mongoose = require('mongoose');
 var bcrypt = require('bcryptjs');
 
@@ -43,4 +44,14 @@ module.exports.comparePassword = function(candidatePassword, hash, callback){
 		if(err) throw err;
 		callback(null, isMatch);
 	});
+}
+
+// Promise
+module.exports.getByUsername = function(username){
+	var query = {username: username};
+	return User.findOne(query).exec(handle.db_callback);
+}
+
+module.exports.getById = function(id){
+	return User.findById(id).exec(handle.db_callback);
 }

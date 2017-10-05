@@ -1,3 +1,4 @@
+var handle = require('../models/error_handle');
 var mongoose = require('mongoose');
 
 var ForumSchema = mongoose.Schema({
@@ -26,4 +27,15 @@ module.exports.getForumByName = function(name, callback){
 
 module.exports.getForumById = function(id, callback){
 	Forum.findById(id, callback);
+}
+
+// Using promise - the better method
+module.exports.getByName = function(name){
+	var query = {name: name};
+	return Forum.findOne(query).exec(handle.db_callback);
+}
+
+module.exports.getById = function(id){
+	if (!mongoose.Types.ObjectId.isValid(id)) return Promise.reject("Invalid ID");
+	return Forum.findById(id).exec(handle.db_callback);
 }
