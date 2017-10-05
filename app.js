@@ -32,7 +32,10 @@ const mongoose = require('mongoose');
 const GlobalConfig = require(path.join(__dirname, 'data/config.json'))
 
 // Connect to database
-mongoose.connect(GlobalConfig.DB.Connection + GlobalConfig.DB.Name);
+mongoose.Promise = global.Promise;
+mongoose.connect(GlobalConfig.DB.Connection + GlobalConfig.DB.Name, {
+	useMongoClient: true
+});
 var db = mongoose.connection;
 
 // Setup app
