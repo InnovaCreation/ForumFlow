@@ -1,5 +1,5 @@
 {{#each posts}}
-<div class="uk-width-1-1 uk-card uk-card-default uk-margin-small uk-card-body" id="post-{{id}}"></div>
+<div class="uk-width-1-1 uk-card uk-card-default uk-margin-small uk-card-body uk-flex uk-flex-middle uk-flex-center" id="post-{{id}}"><div uk-spinner></div></div>
 <script>
 $.post("/post_ajax", {id:"{{id}}"}, (result) => { $("#post-{{id}}").html(result) });
 </script>

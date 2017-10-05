@@ -1,5 +1,5 @@
 {{#each threads}}
-<div class="uk-width-1-1" id="thread-{{id}}"></div>
+<div class="uk-card uk-margin-small uk-card-small uk-card-default uk-card-body uk-width-1-1 uk-flex uk-flex-middle uk-flex-center" id="thread-{{id}}"><div uk-spinner></div></div>
 <script>
 $.post("/thread_ajax", {id:"{{id}}"}, (result) => { $("#thread-{{id}}").html(result) });
 </script>
