@@ -37,6 +37,10 @@ module.exports.getByForum = function(forum){
 	return Thread.find({forum:forum}).exec(handle.db_callback);
 }
 
+module.exports.getByForumSorted = function(forum, sort){
+	return Thread.find({forum:forum}).sort(sort).exec(handle.db_callback);
+}
+
 module.exports.getById = function(id){
 	if (!mongoose.Types.ObjectId.isValid(id)) return Promise.reject("Invalid ID");
 	return Thread.findById(id).exec(handle.db_callback);

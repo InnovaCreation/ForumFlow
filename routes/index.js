@@ -32,7 +32,11 @@ router.get('/', function(req, res){
 	Forum.getByName(req.app.locals.GConfig.RootForum.Name)
 	.then((forum) => {
 		f = forum;
-		return Thread.getByForum(forum.id);
+
+		var order = '-updatedAt';
+		if (req.query.order)
+			order = req.query.order;
+		return Thread.getByForumSorted(forum.id, order);
 	}, handle.promise_reject)
 	.then((thread) => {
 		res.render('index', {
@@ -78,7 +82,10 @@ router.post('/thread_ajax', function(req, res) {
 
 router.get('/thread', function(req, res){
 	var post;
-	Post.getByThread(req.query.id).then((p) => {
+
+	var order = 'floor';
+	if (req.query.order) order = req.query.order;
+	Post.getByThreadSorted(req.query.id, order).then((p) => {
 		if (!p) return Promise.reject();
 		post = p;
 		return Thread.getById(req.query.id);

@@ -36,6 +36,10 @@ module.exports.getByThread = function(thread){
 	return Post.find({thread:thread}).exec(handle.db_callback);
 }
 
+module.exports.getByThreadSorted = function(thread, sort){
+	return Post.find({thread:thread}).sort(sort).exec(handle.db_callback);
+}
+
 module.exports.getById = function(id){
 	if (!mongoose.Types.ObjectId.isValid(id)) return Promise.reject("Invalid ID");
 	return Post.findById(id).exec(handle.db_callback);
