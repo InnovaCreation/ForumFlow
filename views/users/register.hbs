@@ -1,6 +1,6 @@
 <div class="uk-flex uk-flex-middle uk-flex-center">
 	<div class="uk-section uk-width-1-2@m uk-width-1-3@lg">
-		<h2 class="uk-heading-line">Register</h2>
+		<h2 class="uk-heading-line">{{_ "Account Register"}}</h2>
 
 		{{#if errors}}
 		{{#each errors}}
@@ -12,34 +12,34 @@
 			<div class="uk-margin-small">
 				<div class="uk-width-1-1 uk-inline">
 					<span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: user"></span>
-					<input class="uk-input" type="text" placeholder="Name" name="name" id="form-name">
+					<input class="uk-input" type="text" placeholder="{{_ 'Name'}}" name="name" id="form-name">
 				</div>
 			</div>
 			<div class="uk-margin-small">
 				<div class="uk-width-1-1 uk-inline">
 					<span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: user"></span>
-					<input class="uk-input" type="text" placeholder="Username" name="username" id="form-username">
+					<input class="uk-input" type="text" placeholder="{{_ 'Username'}}" name="username" id="form-username">
 				</div>
 			</div>
 			<div class="uk-margin-small">
 				<div class="uk-width-1-1 uk-inline">
 					<span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: mail"></span>
-					<input class="uk-input" type="email" placeholder="Email" name="email" id="form-email">
+					<input class="uk-input" type="email" placeholder="{{_ 'Email'}}" name="email" id="form-email">
 				</div>
 			</div>
 			<div class="uk-margin-small">
 				<div class="uk-width-1-1 uk-inline">
 					<span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: lock"></span>
-					<input class="uk-input" type="password" placeholder="Password" name="password" id="form-passwd">
+					<input class="uk-input" type="password" placeholder="{{_ 'Password'}}" name="password" id="form-passwd">
 				</div>
 			</div>
 			<div class="uk-margin-small">
 				<div class="uk-width-1-1 uk-inline">
 					<span class="uk-form-icon uk-form-icon-flip" uk-icon="icon: lock"></span>
-					<input class="uk-input" type="password" placeholder="Confirm Password" name="password2" id="form-confirm-pwd">
+					<input class="uk-input" type="password" placeholder="{{_ 'Confirm Password'}}" name="password2" id="form-confirm-pwd">
 				</div>
 			</div>
-			<button type="submit" class="uk-button uk-button-primary">Register<span class="uk-icon" uk-icon="icon: check"></span></button>
+			<button type="submit" class="uk-button uk-button-primary">{{_ 'Register'}}<span class="uk-icon" uk-icon="icon: check"></span></button>
 		</form>
 	</div>
 </div>

@@ -1,0 +1,128 @@
+# Index.js
+msgid "You need to be the owner of that thread"
+msgstr "You need to be the owner of that thread"
+
+msgid "yyyy-mm-dd HH:MM"
+msgstr "HH:MM mm-dd yyyy"
+
+msgid "Title can not be empty"
+msgstr "Title can not be empty"
+
+msgid "Content can not be empty"
+msgstr "Content can not be empty"
+
+msgid "You need to login first."
+msgstr "You need to login first."
+
+# Users.js
+msgid "Name is required"
+msgstr "Name is required"
+
+msgid "Email is required"
+msgstr "Email is required"
+
+msgid "Email is not valid"
+msgstr "Email is not valid"
+
+msgid "Username is required"
+msgstr "Username is required"
+
+msgid "Username can not contain special characters"
+msgstr "Username can not contain special characters"
+
+msgid "Password is required"
+msgstr "Password is required"
+
+msgid "Passwords do not match"
+msgstr "Passwords do not match"
+
+msgid "You are registered and can now login"
+msgstr "You are registered and can now login"
+
+msgid "Unknown User"
+msgstr "Unknown User"
+
+msgid "Invalid password"
+msgstr "Invalid password"
+
+msgid "You are logged out"
+msgstr "You are logged out"
+
+# default.hbs
+msgid "Powered by <a>ForumFlow</a>"
+msgstr "Powered by <a>ForumFlow</a>"
+
+# post_ajax.hbs
+msgid "Written by"
+msgstr "Written by"
+
+# thread_ajax.hbs
+msgid "Created by"
+msgstr "Created by"
+
+msgid "Remove"
+msgstr "Remove"
+
+# new_post.hbs
+msgid "Reply to"
+msgstr "Reply to"
+
+msgid "Content"
+msgstr "Content"
+
+msgid "Post"
+msgstr "Post"
+
+# new_thread.hbs
+msgid "Create thread"
+msgstr "Create thread"
+
+msgid "Title"
+msgstr "Title"
+
+   # msgid "Post" -> overlap
+
+# thread.hbs
+msgid "Reply"
+msgstr "Reply"
+
+# login.hbs
+msgid "Account Login"
+msgstr "Account Login"
+
+msgid "Username"
+msgstr "Usesname"
+
+msgid "Password"
+msgstr "Password"
+
+msgid "Login"
+msgstr "Login"
+
+# register.hbs
+msgid "Register"
+msgstr "Register"
+
+msgid "Name"
+msgstr "Name"
+
+   # msgid "Username" -> overlap
+
+msgid "Email"
+msgstr "Email"
+
+   # msgid "Password" -> overlap
+
+msgid "Confirm Password"
+msgstr "Confirm Password"
+
+msgid "Account Register"
+msgstr "Account Register"
+
+# index.hbs
+
+msgid "Logout"
+msgstr "Logout"
+
+msgid "New Thread"
+msgstr "New Thread"

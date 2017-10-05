@@ -3,11 +3,11 @@ INDEX
 <div class="uk-margin-small uk-width-1-1">
 	<div class="uk-inline">
 		{{#if req.user}}
-		<a class="uk-button uk-button-default" href="/users/logout">Logout</a>
-		<a class="uk-button uk-button-primary" href="/new_thread?id={{forum.id}}">New Thread</a>
+		<a class="uk-button uk-button-default" href="/users/logout">{{_ "Logout"}}</a>
+		<a class="uk-button uk-button-primary" href="/new_thread?id={{forum.id}}">{{_ "New Thread"}}</a>
 		{{else}}
-		<a class="uk-button uk-button-default" href="/users/login">Login</a>
-		<a class="uk-button uk-button-primary" href="/users/register">Register</a>
+		<a class="uk-button uk-button-default" href="/users/login">{{_ "Login"}}</a>
+		<a class="uk-button uk-button-primary" href="/users/register">{{_ "Register"}}</a>
 		{{/if}}
 	</div>
 </div>

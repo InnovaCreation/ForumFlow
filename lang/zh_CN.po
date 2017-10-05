@@ -1,0 +1,128 @@
+# Index.js
+msgid "You need to be the owner of that thread"
+msgstr "你不是此贴的作者"
+
+msgid "yyyy-mm-dd HH:MM"
+msgstr "yyyy-mm-dd HH:MM"
+
+msgid "Title can not be empty"
+msgstr "标题不能为空"
+
+msgid "Content can not be empty"
+msgstr "内容不能为空"
+
+msgid "You need to login first."
+msgstr "你需要先登录"
+
+# Users.js
+msgid "Name is required"
+msgstr "姓名是必填的"
+
+msgid "Email is required"
+msgstr "邮箱是必填的"
+
+msgid "Email is not valid"
+msgstr "邮箱无效"
+
+msgid "Username is required"
+msgstr "用户名是必填的"
+
+msgid "Username can not contain special characters"
+msgstr "用户名不得含有特殊字符"
+
+msgid "Password is required"
+msgstr "密码是必须的"
+
+msgid "Passwords do not match"
+msgstr "二次输入的密码不匹配"
+
+msgid "You are registered and can now login"
+msgstr "注册成功！现在可以登录了"
+
+msgid "Unknown User"
+msgstr "未知用户"
+
+msgid "Invalid password"
+msgstr "密码错误"
+
+msgid "You are logged out"
+msgstr "你已经登出"
+
+# default.hbs
+msgid "Powered by <a>ForumFlow</a>"
+msgstr "由<a>ForumFlow</a>引擎驱动"
+
+# post_ajax.hbs
+msgid "Written by"
+msgstr "作者 "
+
+# thread_ajax.hbs
+msgid "Created by"
+msgstr "创建者 "
+
+msgid "Remove"
+msgstr "删除"
+
+# new_post.hbs
+msgid "Reply to"
+msgstr "回复: "
+
+msgid "Content"
+msgstr "内容"
+
+msgid "Post"
+msgstr "发布"
+
+# new_thread.hbs
+msgid "Create thread"
+msgstr "创建帖子"
+
+msgid "Title"
+msgstr "内容"
+
+   # msgid "Post" -> overlap
+
+# thread.hbs
+msgid "Reply"
+msgstr "回复"
+
+# login.hbs
+msgid "Account Login"
+msgstr "账户登录"
+
+msgid "Username"
+msgstr "用户名"
+
+msgid "Password"
+msgstr "密码"
+
+msgid "Login"
+msgstr "登录"
+
+# register.hbs
+msgid "Register"
+msgstr "注册"
+
+msgid "Name"
+msgstr "姓名"
+
+   # msgid "Username" -> overlap
+
+msgid "Email"
+msgstr "邮箱"
+
+   # msgid "Password" -> overlap
+
+msgid "Confirm Password"
+msgstr "确认密码"
+
+msgid "Account Register"
+msgstr "账户注册"
+
+# index.hbs
+
+msgid "Logout"
+msgstr "登出"
+
+msgid "New Thread"
+msgstr "创建新帖"

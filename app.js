@@ -82,6 +82,10 @@ User.getUserByUsername(GlobalConfig.Root.Name, function(err, user) {
 	}
 });
 
+// Load language
+require('./locals');
+if (GlobalConfig.App.LANG) _.setLocale(GlobalConfig.App.LANG)
+
 // Init weapon
 var app = express();
 
@@ -90,7 +94,9 @@ app.set('views', path.join(__dirname, 'views'));
 app.engine('hbs', hbs({
 	defaultLayout:'default',
 	extname: '.hbs',
-	helpers: {}
+	helpers: {
+		_ : (msg) => { return _.gettext(msg); }
+	}
 }));
 app.locals.GConfig = GlobalConfig;
 app.set('view engine', 'hbs');

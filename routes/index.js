@@ -116,7 +116,7 @@ router.get('/remove_thread', function(req, res){
 			thread.remove();
 			return Post.getByThread(thread.id);
 		} else {
-			req.flash('error_msg', 'You need to be the owner of that thread');
+			req.flash('error_msg', _.gettext('You need to be the owner of that thread'));
 			return Promise.reject();
 		}
 	}, handle.promise_reject).then((p) => {
@@ -144,7 +144,7 @@ router.post('/post_ajax', function(req, res) {
 				author:u.name,
 				layout:false,
 				post:p,
-				created_at:dateformat(p.createdAt, "yyyy-mm-dd HH:MM")
+				created_at:dateformat(p.createdAt, _.gettext("yyyy-mm-dd HH:MM"))
 			});
 		});
 	});
@@ -188,8 +188,8 @@ router.post('/new_thread', function(req, res){
 		var user = req.user;
 
 		// Validation
-		req.checkBody('title', 'Title can not be empty').notEmpty();
-		req.checkBody('content', 'Content can not be empty').notEmpty();
+		req.checkBody('title', _.gettext('Title can not be empty')).notEmpty();
+		req.checkBody('content', _.gettext('Content can not be empty')).notEmpty();
 
 		var errors = req.validationErrors();
 
@@ -216,7 +216,7 @@ router.post('/new_thread', function(req, res){
 			});
 		}
 	} else {
-		req.flash('error_msg', 'You need to login first.');
+		req.flash('error_msg', _.gettext('You need to login first.'));
 
 		res.redirect('/users/login');
 	}
@@ -242,7 +242,7 @@ router.post('/new_post', function(req, res){
 		var user = req.user;
 
 		// Validation
-		req.checkBody('content', 'Content can not be empty').notEmpty();
+		req.checkBody('content', _.gettext('Content can not be empty')).notEmpty();
 
 		var errors = req.validationErrors();
 
@@ -263,7 +263,7 @@ router.post('/new_post', function(req, res){
 			});
 		}
 	} else {
-		req.flash('error_msg', 'You need to login first.');
+		req.flash('error_msg', _.gettext('You need to login first.'));
 
 		res.redirect('/users/login');
 	}

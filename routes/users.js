@@ -26,13 +26,13 @@ router.post('/register', function(req, res){
 	var usernameRegex = /^[a-zA-Z0-9]+$/;
 
 	// Validation
-	req.checkBody('name', 'Name is required').notEmpty();
-	req.checkBody('email', 'Email is required').notEmpty();
-	req.checkBody('email', 'Email is not valid').isEmail();
-	req.checkBody('username', 'Username is required').notEmpty();
-	req.checkBody('username', 'Username can not contain special characters').matches(usernameRegex);
-	req.checkBody('password', 'Password is required').notEmpty();
-	req.checkBody('password2', 'Passwords do not match').equals(req.body.password);
+	req.checkBody('name', _.gettext('Name is required')).notEmpty();
+	req.checkBody('email', _.gettext('Email is required')).notEmpty();
+	req.checkBody('email', _.gettext('Email is not valid')).isEmail();
+	req.checkBody('username', _.gettext('Username is required')).notEmpty();
+	req.checkBody('username', _.gettext('Username can not contain special characters')).matches(usernameRegex);
+	req.checkBody('password', _.gettext('Password is required')).notEmpty();
+	req.checkBody('password2', _.gettext('Passwords do not match')).equals(req.body.password);
 
 	var errors = req.validationErrors();
 
@@ -53,7 +53,7 @@ router.post('/register', function(req, res){
 			console.log(user);
 		});
 
-		req.flash('success_msg', 'You are registered and can now login');
+		req.flash('success_msg', _.gettext('You are registered and can now login'));
 
 		res.redirect('/users/login');
 	}
@@ -64,7 +64,7 @@ passport.use(new LocalStrategy(
 		User.getUserByUsername(username, function(err, user){
 			if(err) throw err;
 			if(!user){
-				return done(null, false, {message: 'Unknown User'});
+				return done(null, false, {message: _.gettext('Unknown User')});
 			}
 
 			User.comparePassword(password, user.password, function(err, isMatch){
@@ -72,7 +72,7 @@ passport.use(new LocalStrategy(
 				if(isMatch){
 					return done(null, user);
 				} else {
-					return done(null, false, {message: 'Invalid password'});
+					return done(null, false, {message: _.gettext('Invalid password')});
 				}
 			});
 		});
@@ -98,7 +98,7 @@ function(req, res) {
 router.get('/logout', function(req, res){
 	req.logout();
 
-	req.flash('success_msg', 'You are logged out');
+	req.flash('success_msg', _.gettext('You are logged out'));
 
 	res.redirect('/users/login');
 });
