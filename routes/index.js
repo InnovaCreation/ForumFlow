@@ -174,7 +174,6 @@ function new_post(thread, owner, content, callback) {
 		floor : thread.last_floor
 	});
 
-	console.log(firstPost);
 	thread.save();
 
 	Post.createPost(firstPost, callback);
