@@ -6,7 +6,7 @@ function enter_thread(thread_id) {
 </script>
 
 {{#each threads}}
-<div class="uk-card uk-margin-small@m uk-card-small uk-card-default uk-card-body uk-width-1-1 uk-flex uk-flex-middle uk-flex-center" id="thread-{{id}}">
+<div class="uk-card uk-margin-small uk-card-small uk-card-default uk-card-body uk-width-1-1 uk-flex uk-flex-middle uk-flex-center" id="thread-{{id}}">
   <div uk-spinner></div>
   <script>
   $.post("/thread_ajax", {id:"{{id}}"}, (result) => { $("#thread-{{id}}").html(result) });
