@@ -8,6 +8,9 @@ var UserSchema = mongoose.Schema({
 		type: String,
 		index:true
 	},
+	alias: {
+		type: String
+	},
 	password: {
 		type: String
 	},

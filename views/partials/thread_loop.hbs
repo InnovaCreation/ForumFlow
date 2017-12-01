@@ -1,6 +1,15 @@
-{{#each threads}}
-<div class="uk-card uk-margin-small uk-card-small uk-card-default uk-card-body uk-width-1-1 uk-flex uk-flex-middle uk-flex-center" id="thread-{{id}}"><div uk-spinner></div></div>
 <script>
-$.post("/thread_ajax", {id:"{{id}}"}, (result) => { $("#thread-{{id}}").html(result) });
+function enter_thread(thread_id) {
+  $("#page_content").html("<div class=\"uk-flex uk-flex-middle uk-flex-center\"><div uk-spinner></div></div>");
+  $.post("/ajax", {thread:thread_id}, (result) => { $("#page_content").html(result) });
+}
 </script>
+
+{{#each threads}}
+<div class="uk-card uk-margin-small@m uk-card-small uk-card-default uk-card-body uk-width-1-1 uk-flex uk-flex-middle uk-flex-center" id="thread-{{id}}">
+  <div uk-spinner></div>
+  <script>
+  $.post("/thread_ajax", {id:"{{id}}"}, (result) => { $("#thread-{{id}}").html(result) });
+  </script>
+</div>
 {{/each}}

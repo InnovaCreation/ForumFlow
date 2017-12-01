@@ -25,11 +25,10 @@ var Post = require('../models/post');
 
 var app = require('../app');
 
-// Get Homepage
-router.get('/', function(req, res){
+function forum_page(req,res,fname) {
 	var f;
 
-	Forum.getByName(req.app.locals.GConfig.RootForum.Name)
+	Forum.getByName(fname)
 	.then((forum) => {
 		f = forum;
 
@@ -39,12 +38,81 @@ router.get('/', function(req, res){
 		return Thread.getByForumSorted(forum.id, order);
 	}, handle.promise_reject)
 	.then((thread) => {
-		res.render('index', {
+		res.render('forum/forum', {
 			req:req,
 			threads:thread,
-			forum:f
+			forum:f,
+			forum_display_name: f.alias ? f.alias : f.name,
+			layout:false
 		});
-	}, handle.promise_reject);
+	}, handle.promise_reject).then(null, handle.promise_reject_end);
+}
+
+function forum_session(req,res,fname) {
+	res.render('index', {
+		req:req,
+		type:"forum",
+		id:fname
+	});
+}
+
+function thread_page(req,res,tid) {
+	var post, thread;
+
+	var order = 'floor';
+	if (req.query.order) order = req.query.order;
+	Post.getByThreadSorted(tid, order).then((p) => {
+		// Get the posts list in the thread
+		if (!p) return Promise.reject();
+		post = p;
+		// Get the thread itself
+		return Thread.getById(tid);
+	}, handle.promise_reject).then((t) => {
+		thread = t;
+		// Get the forum it belongs to
+		return Forum.getById(thread.forum);
+	}, handle.promise_reject).then((f) => {
+		// render
+		res.render('thread/thread', {
+			req:req,
+			posts:post,
+			title:thread.name,
+			thread:thread,
+			forum:f,
+			forum_display_name: f.alias ? f.alias : f.name,
+			layout:false
+		});
+	}, handle.promise_reject).then(null, ()=>{
+		res.redirect('/');
+	});
+}
+
+function thread_session(req,res,tid) {
+	res.render('index', {
+		req:req,
+		type:"thread",
+		id:tid
+	});
+}
+
+// Get (session)
+router.get('/', function(req, res){
+	if (req.query) {
+		// Has query, let's take a look
+		if (req.query.forum) { forum_session(req,res,req.query.forum); return; }
+		if (req.query.thread) { thread_session(req,res,req.query.thread); return; }
+	}
+	// Show default root forum
+	console.log("Showing root forum");
+	forum_session(req,res,req.app.locals.GConfig.RootForum.Name);
+});
+
+// POST (ajax)
+router.post('/ajax', function(req, res){
+	// Has query, let's take a look
+	console.debug(req.body);
+	if (req.body.forum) { forum_page(req,res,req.body.forum); return; }
+	if (req.body.thread) { thread_page(req,res,req.body.thread); return; }
 });
 
 router.post('/thread_ajax', function(req, res) {
@@ -77,27 +145,6 @@ router.post('/thread_ajax', function(req, res) {
 		});
 	}, handle.promise_reject).then(null, ()=>{
 		res.send('');
-	});
-});
-
-router.get('/thread', function(req, res){
-	var post;
-
-	var order = 'floor';
-	if (req.query.order) order = req.query.order;
-	Post.getByThreadSorted(req.query.id, order).then((p) => {
-		if (!p) return Promise.reject();
-		post = p;
-		return Thread.getById(req.query.id);
-	}, handle.promise_reject).then((t) => {
-		res.render('thread/thread', {
-			req:req,
-			posts:post,
-			title:t.name,
-			thread:t
-		});
-	}, handle.promise_reject).then(null, ()=>{
-		res.redirect('/');
 	});
 });
 

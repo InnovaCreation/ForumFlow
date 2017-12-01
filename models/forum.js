@@ -6,8 +6,11 @@ var ForumSchema = mongoose.Schema({
 		type: String,
 		index: true
 	},
+	alias: {
+		type: String
+	},
 	moderator: {
-		type: Object
+		type: Array
 	},
 	sub_forum: {
 		type: Array

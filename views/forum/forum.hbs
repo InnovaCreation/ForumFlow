@@ -1,0 +1,13 @@
+<div id="forum_content">
+	<h1 class="uk-card-title">{{forum_display_name}}</h1>
+	<p class="uk-article-meta">Total {{forum.sub_forum.length}} sub-forums.</p>
+	<a class="uk-button uk-button-primary" href="/new_thread?id={{forum.id}}">{{_ "New Thread"}}</a>
+</div>
+
+<script>
+  var stateObj = { forum: "{{forum.name}}" }; history.pushState(stateObj, "Forum | {{forum.name}}", "?forum={{forum.name}}");
+	$("#page_side_content").html("");
+	$("#forum_content").appendTo($("#page_side_content"));
+</script>
+
+{{> thread_loop}}

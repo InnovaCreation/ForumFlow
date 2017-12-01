@@ -1,6 +1,28 @@
+<div id="thread_content">
+	<h1 class="uk-card-title">{{title}}</h1>
+	<p class="uk-article-meta">Total {{thread.last_floor}} posts.</p>
+	{{#if req.user}}<a class="uk-button uk-button-primary" href="/new_post?id={{thread.id}}">{{_ "Reply"}}</a>{{/if}}
+</div>
+
+<script>
+	var stateObj = { thread: "{{thread.id}}" }; history.pushState(stateObj, "{{title}}", "?thread={{thread.id}}");
+	$("#page_side_content").html("");
+	$("#thread_content").appendTo($("#page_side_content"));
+</script>
+
 <div class="uk-section uk-width-1-1">
 	<h1 class="uk-heading-primary">{{title}}</h1>
-	<div class="uk-width-1-1 uk-container uk-padding-small@s uk-padding-medium@m uk-padding-top">
+	<script>
+	function enter_forum(f) {
+		$("#page_content").html("<div class=\"uk-flex uk-flex-middle uk-flex-center\"><div uk-spinner></div></div>");
+		$.post("/ajax", {forum:f}, (result) => { $("#page_content").html(result) });
+	}
+	</script>
+	<ul class="uk-breadcrumb">
+    <li><a onclick="enter_forum('{{forum.name}}')">{{forum_display_name}}</a></li>
+    <li><span>{{title}}</span></li>
+	</ul>
+	<div class="uk-width-1-1 uk-container uk-padding-small@m uk-padding-medium@l uk-padding-top">
 		{{> post_loop}}
 		{{#if req.user}}<a class="uk-button uk-button-primary" href="/new_post?id={{thread.id}}">{{_ "Reply"}}</a>{{/if}}
 	</div>

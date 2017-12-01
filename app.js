@@ -52,6 +52,7 @@ User.getUserByUsername(GlobalConfig.Root.Name, function(err, user) {
 			if (!f) {
 				var rootforum = new Forum({
 					name: GlobalConfig.RootForum.Name,
+					alias: GlobalConfig.RootForum.Alias,
 					sub_forum: [],
 					moderator: rootuser.id
 				});
@@ -69,7 +70,8 @@ User.getUserByUsername(GlobalConfig.Root.Name, function(err, user) {
 			name: GlobalConfig.Root.Name,
 			email: GlobalConfig.Root.Email,
 			username: GlobalConfig.Root.UserName,
-			password: GlobalConfig.Root.Passwd
+			password: GlobalConfig.Root.Passwd,
+			alias: GlobalConfig.Root.Alias
 		});
 
 		User.createUser(rootUser, function(err, user){
