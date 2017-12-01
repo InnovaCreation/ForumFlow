@@ -86,6 +86,19 @@ msgstr "内容"
 msgid "Reply"
 msgstr "回复"
 
+msgid "Total"
+msgstr "总计"
+
+msgid "Posts"
+msgstr "回复"
+
+# forum.hbs
+
+  # msgid "Total" -> overlap
+
+msgid "sub-forums"
+msgstr "板块"
+
 # login.hbs
 msgid "Account Login"
 msgstr "账户登录"

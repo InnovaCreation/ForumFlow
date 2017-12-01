@@ -1,6 +1,6 @@
 <div id="thread_content">
 	<h1 class="uk-card-title">{{title}}</h1>
-	<p class="uk-article-meta">Total {{thread.last_floor}} posts.</p>
+	<p class="uk-article-meta">{{_ "Total"}} {{thread.last_floor}} {{_ "Posts"}}</p>
 	{{#if req.user}}<a class="uk-button uk-button-primary" href="/new_post?id={{thread.id}}">{{_ "Reply"}}</a>{{/if}}
 </div>
 

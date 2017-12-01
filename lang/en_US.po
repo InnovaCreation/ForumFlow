@@ -86,6 +86,19 @@ msgstr "Title"
 msgid "Reply"
 msgstr "Reply"
 
+msgid "Total"
+msgstr "Total"
+
+msgid "Posts"
+msgstr "Posts"
+
+# forum.hbs
+
+  # msgid "Total" -> overlap
+
+msgid "sub-forums"
+msgstr "sub-forums"
+
 # login.hbs
 msgid "Account Login"
 msgstr "Account Login"
