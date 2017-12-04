@@ -1,13 +1,19 @@
 <div id="thread_content">
 	<h1 class="uk-card-title">{{title}}</h1>
 	<p class="uk-article-meta">{{_ "Total"}} {{thread.last_floor}} {{_ "Posts"}}</p>
-	{{#if req.user}}<a class="uk-button uk-button-primary" href="/new_post?id={{thread.id}}">{{_ "Reply"}}</a>{{/if}}
+	{{#if req.user}}<a class="uk-button uk-button-primary" onclick="reply('{{thread.id}}')">{{_ "Reply"}}</a>{{/if}}
 </div>
 
 <script>
 	var stateObj = { thread: "{{thread.id}}" }; history.pushState(stateObj, "{{title}}", "?thread={{thread.id}}");
 	$("#page_side_content").html("");
 	$("#thread_content").appendTo($("#page_side_content"));
+
+	function reply(tid) {
+		$.post("/ajax", {reply_thread:tid}, (result) => {
+			$("#page_content").html(result);
+		});
+	}
 </script>
 
 <div class="uk-section uk-width-1-1">
@@ -24,6 +30,6 @@
 	</ul>
 	<div class="uk-width-1-1 uk-container uk-padding-small@m uk-padding-medium@l uk-padding-top">
 		{{> post_loop}}
-		{{#if req.user}}<a class="uk-button uk-button-primary" href="/new_post?id={{thread.id}}">{{_ "Reply"}}</a>{{/if}}
+		{{#if req.user}}<a class="uk-button uk-button-primary" onclick="reply('{{thread.id}}')">{{_ "Reply"}}</a>{{/if}}
 	</div>
 </div>

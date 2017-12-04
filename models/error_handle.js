@@ -13,5 +13,5 @@ module.exports.promise_reject = (err) => {
 }
 
 module.exports.promise_reject_end = (err) => {
-	console.log(err)
+	console.log("Promise Rejected :" + err)
 }

@@ -95,6 +95,51 @@ function thread_session(req,res,tid) {
 	});
 }
 
+function thread_reply_page(req, res, id){
+	if (id) {
+		Thread.getById(id).then((t) => {
+			res.render('thread/new_post', {
+				thread:t,
+				layout:false
+			});
+		}, handle.promise_reject_end);
+	} else {
+		res.redirect('/');
+	}
+}
+
+function thread_reply(req,res,content,thread,user){
+	// Reject illegal case
+	if (!thread || !user) {
+		res.json({FFstate:"api_call_illegal"});
+		return;
+	}
+
+	// Validation
+	req.checkBody('content', _.gettext('Content can not be empty')).notEmpty();
+
+	var errors = req.validationErrors();
+
+	if(errors){
+		res.json({FFstate:"errors", errors:errors});
+	} else {
+		Thread.getById(thread).then((t) => {
+			if (!t) {
+				errors = [{msg:"Thread not found"}];
+				return Promise.reject();
+			}
+			return new_post(t, user, content);
+		}, handle.promise_reject).then((p) => {
+			console.log("Create post " + p.id.toString() + " floor   " + p.floor);
+
+			res.json({FFstate:"ok", pid:p.id});
+		}, (err) => {
+			console.log(err);
+			res.json({FFstate:"errors", errors:errors});
+		});
+	}
+}
+
 // Get (session)
 router.get('/', function(req, res){
 	if (req.query) {
@@ -110,9 +155,23 @@ router.get('/', function(req, res){
 // POST (ajax)
 router.post('/ajax', function(req, res){
 	// Has query, let's take a look
+	console.debug("[POST]");
 	console.debug(req.body);
+
+	// Page view request
 	if (req.body.forum) { forum_page(req,res,req.body.forum); return; }
 	if (req.body.thread) { thread_page(req,res,req.body.thread); return; }
+	if (req.body.reply_thread) { thread_reply_page(req,res,req.body.reply_thread); return; }
+});
+
+// POST API (ajax)
+router.post('/api', function(req, res){
+	// Has query, let's take a look
+	console.debug("[POST API]");
+	console.debug(req.body);
+
+	// API Action
+	if (req.body.reply_thread) { thread_reply(req, res, req.body.content, req.body.reply_thread, req.user); return; }
 });
 
 router.post('/thread_ajax', function(req, res) {
@@ -210,11 +269,11 @@ router.get('/new_thread', function(req, res){
 	}
 });
 
-function new_post(thread, owner, content, callback) {
+function new_post(thread, owner, content) {
 	thread.last_floor ++;
 	if (!thread.last_floor) thread.last_floor = 0;
 
-	var firstPost = new Post({
+	var p = new Post({
 		thread: thread.id,
 		owner : owner.id,
 		post  : content,
@@ -223,7 +282,9 @@ function new_post(thread, owner, content, callback) {
 
 	thread.save();
 
-	Post.createPost(firstPost, callback);
+	Post.createPost(p);
+
+	return p;
 }
 
 router.post('/new_thread', function(req, res){
@@ -253,59 +314,11 @@ router.post('/new_thread', function(req, res){
 			Thread.createThread(newThread, function(err,t) {
 				if (err) throw err;
 
-				new_post(t, user, content, function(err,t) {
-					if (err) throw err;
+				new_post(t, user, content).then((t) => {
 					console.log("Create thread " + t.id.toString());
 
 					res.redirect('/');
-				});
-			});
-		}
-	} else {
-		req.flash('error_msg', _.gettext('You need to login first.'));
-
-		res.redirect('/users/login');
-	}
-});
-
-router.get('/new_post', function(req, res){
-	if (req.query.id) {
-		Thread.getThreadById(req.query.id, function(err, t) {
-			if (err) throw err;
-			res.render('thread/new_post', {
-				thread:t
-			});
-		});
-	} else {
-		res.redirect('/');
-	}
-});
-
-router.post('/new_post', function(req, res){
-	if (req.user) {
-		var content = req.body.content;
-		var thread = req.body.thread;
-		var user = req.user;
-
-		// Validation
-		req.checkBody('content', _.gettext('Content can not be empty')).notEmpty();
-
-		var errors = req.validationErrors();
-
-		if(errors){
-			res.render('/new_post',{
-				errors:errors
-			});
-		} else {
-			Thread.getThreadById(thread, (err,t) => {
-				if (err) throw err;
-				if (!t) res.redirect('/');
-				new_post(t, user, content, function(err,p) {
-					if (err) throw err;
-					console.log("Create post " + p.id.toString() + " floor   " + p.floor);
-
-					res.redirect('/');
-				});
+				}, handle.promise_reject_end);
 			});
 		}
 	} else {

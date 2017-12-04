@@ -2,19 +2,45 @@
 	<div class="uk-panel uk-width-1-1">
 		<h2 class="uk-heading-line">{{_ "Reply to"}} {{thread.name}}</h2>
 
-		{{#if errors}}
-		{{#each errors}}
-		<div class="uk-label uk-label-danger">{{msg}}</div>
-		{{/each}}
-		{{/if}}
+		<div id="errors">
+			{{#if errors}}
+			{{#each errors}}
+			<div class="uk-label uk-label-danger">{{msg}}</div>
+			{{/each}}
+			{{/if}}
+		</div>
 
-		<form method="post" action="/new_post" class="uk-form uk-margin-small">
+		<script>
+		function enter_thread(thread_id) {
+		  $("#page_content").html("<div class=\"uk-flex uk-flex-middle uk-flex-center\"><div uk-spinner></div></div>");
+		  $.post("/ajax", {thread:thread_id}, (result) => { $("#page_content").html(result) });
+		}
+		function submit_post(tid) {
+			var content = $("#form-content").val();
+			$.post("/api", {reply_thread:tid, content:content}, (result) => {
+				console.log(result);
+
+				if (result.FFstate == "ok") {
+					enter_thread(tid);
+					var post = $("#post-" + result.pid);
+					UIkit.scroll(post).scrollTo(post);
+				} else if (result.FFstate == "errors" && result.errors) {
+					var html = "";
+					result.errors.forEach((e) => {
+						html += "<div class=\"uk-label uk-label-danger\">" + e.msg + "</div>";
+					});
+					$("#errors").html(html);
+				}
+			});
+		}
+		</script>
+
+		<div class="uk-form uk-margin-small">
 			<div class="uk-margin-small">
 				<textarea class="uk-textarea" placeholder="{{_ 'Content'}}" name="content" id="form-content" uk-height-viewport="expand: true"></textarea>
 			</div>
-			<input type="hidden" name="thread" id="form-thread" value="{{thread.id}}">
 			<div class="uk-margin-small">
-				<button type="submit" class="uk-button uk-button-primary">{{_ "Post"}}</button>
+				<a onclick="submit_post('{{thread.id}}')" class="uk-button uk-button-primary">{{_ "Post"}}</a>
 			</div>
 		</form>
 	</div>
