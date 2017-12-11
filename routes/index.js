@@ -311,15 +311,12 @@ router.post('/new_thread', function(req, res){
 				name : title
 			});
 
-			Thread.createThread(newThread, function(err,t) {
-				if (err) throw err;
-
-				new_post(t, user, content).then((t) => {
-					console.log("Create thread " + t.id.toString());
-
-					res.redirect('/');
-				}, handle.promise_reject_end);
-			});
+			Thread.createThread(newThread).then((t) => {
+				return new_post(t, user, content);
+			}, handle.promise_reject).then((t) => {
+				console.log("Create thread " + t.id.toString());
+				res.redirect('/');
+			}, handle.promise_reject_end);
 		}
 	} else {
 		req.flash('error_msg', _.gettext('You need to login first.'));

@@ -19,11 +19,6 @@ var ThreadSchema = mongoose.Schema({
 
 var Thread = module.exports = mongoose.model('thread', ThreadSchema);
 
-module.exports.createThread = function(newThread, callback){
-	newThread.last_floor = 0;
-	newThread.save(callback);
-}
-
 module.exports.getThreadsByForum = function(forum,callback){
 	Thread.find({forum:forum}, callback);
 }
@@ -33,6 +28,11 @@ module.exports.getThreadById = function(id, callback){
 }
 
 // Promise
+module.exports.createThread = function(newThread){
+	newThread.last_floor = 0;
+	return newThread.save();
+}
+
 module.exports.getByForum = function(forum){
 	return Thread.find({forum:forum}).exec(handle.db_callback);
 }
